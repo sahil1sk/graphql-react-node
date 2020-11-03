@@ -6,11 +6,14 @@ const cors = require('cors');
 
 const graphQlSchema = require('./graphql/schema/index');
 const graphQlResolvers = require('./graphql/resolvers/index');
+const isAuth = require('./middleware/is-auth'); // for check the auth
 
 const app = express();
 
 app.use(cors()); // using core so that any other url will able to make request
 app.use(bodyParser.json());
+
+app.use(isAuth); // so for every request this middleware will check that it is authenticated user or not
 
 app.use('/graphql', graphqlHttp({
     schema: graphQlSchema,

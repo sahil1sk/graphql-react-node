@@ -13,16 +13,24 @@ module.exports = {
       throw err;
     }
   },
-  bookEvent: async args => {
+  bookEvent: async (args, req) => {
+
+    // if user is not authenticated then it will through the error this auth we set when we check middleware in app.js file
+    if(!req.isAuth) {
+      throw new Error('Unauthenticated');
+    }
     const fetchedEvent = await Event.findOne({ _id: args.eventId });
     const booking = new Booking({
-      user: '5f9bbb8429c16044642649ef',
+      user: req.userId,
       event: fetchedEvent
     });
     const result = await booking.save();
     return transformBooking(result);
   },
-  cancelBooking: async args => {
+  cancelBooking: async (args, req) => {
+    if(!req.isAuth) {
+      throw new Error('Unauthenticated');
+    }
     try {
       const booking = await Booking.findById(args.bookingId).populate('event');
       const event = transformEvent(booking.event);

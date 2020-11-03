@@ -1,4 +1,5 @@
 const Event = require('../../models/event');
+const User = require('../../models/user');
 
 const { transformEvent } = require('./merge');
   
@@ -13,19 +14,23 @@ module.exports = {
         throw err;
       }
     },
-    createEvent: async args => {
+    createEvent: async (args, req) => {
+      // if user is not authenticated then it will through the error this auth we set when we check middleware in app.js file
+      if(!req.isAuth) {
+        throw new Error('Unauthenticated');
+      }
       const event = new Event({
         title: args.eventInput.title,
         description: args.eventInput.description,
         price: +args.eventInput.price,
         date: new Date(args.eventInput.date),
-        creator: '5f9bbb8429c16044642649ef'
+        creator: req.userId
       });
       let createdEvent;
       try {
         const result = await event.save();
         createdEvent = transformEvent(result);
-        const creator = await User.findById('5f9bbb8429c16044642649ef');
+        const creator = await User.findById(req.userId);
   
         if (!creator) {
           throw new Error('User not found.');
