@@ -34,7 +34,7 @@ app.use('/graphql', graphqlHttp({
 mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.gfzth.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`, { useNewUrlParser: true , useUnifiedTopology: true, useCreateIndex: true })
 .then(() => {     
     app.listen(4000, () => {
-        console.log('Server listen at port 3000');
+        console.log('Server listen at port 4000');
     });
 })
 .catch(err => console.log(err));
