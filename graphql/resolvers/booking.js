@@ -3,9 +3,13 @@ const Booking = require('../../models/booking');
 const {transformBooking, transformEvent } = require('./merge');
 
 module.exports = {
-  bookings: async () => {
+  bookings: async (args, req) => {
+    // if user is not authenticated then it will through the error this auth we set when we check middleware in app.js file
+    if(!req.isAuth) {
+      throw new Error('Unauthenticated');
+    }
     try {
-      const bookings = await Booking.find();
+      const bookings = await Booking.find({user: req.userId});
       return bookings.map(booking => {
         return transformBooking(booking);
       });
